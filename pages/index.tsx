@@ -4,6 +4,7 @@ import {Button, Flex, Grid, Link, Stack, Image, Text} from "@chakra-ui/react";
 
 import {Product} from "../product/types";
 import api from "../product/api";
+import axios from "axios";
 
 interface Props {
   products: Product[];
@@ -31,6 +32,19 @@ const IndexRoute: React.FC<Props> = ({products}) => {
         ),
     [cart],
   );
+
+
+
+function sendData(cart) {
+  var data = '';
+  console.log(cart);
+  for(let i=0;i<cart.length;i++){
+    data.concat(cart.title+','+cart.description);
+  }
+  axios.post('https://script.google.com/macros/s/AKfycbyOqGlPaUK3PyEvl_MF9TbgsgmR1OkgYQaRoehx7EpsF0aRAYjQJpAPz8ti6Uu46l5G/exec',{
+    data
+  })
+}
 
   return (
     <Stack spacing={6}>
@@ -73,7 +87,7 @@ const IndexRoute: React.FC<Props> = ({products}) => {
             isExternal
             as={Link}
             colorScheme="whatsapp"
-            href={`https://wa.me/5491137881839?text=${encodeURIComponent(text)}`}
+            onClick={()=>sendData(cart)}
             width="fit-content"
           >
             Completar pedido ({cart.length} productos)
