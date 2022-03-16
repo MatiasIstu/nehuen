@@ -38,7 +38,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   function sendData(cart) {
     var data;
     console.log(cart);
-
+    
     for (let i = 0; i < cart.length; i++) {
       data = '';
       data = data.concat([cart[i].title, cart[i].description, cart[i].price].join(','));

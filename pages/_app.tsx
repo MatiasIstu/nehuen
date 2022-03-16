@@ -13,7 +13,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       maxWidth="container.xl"
       padding={4}>
         <VStack marginBottom={6}>
-          <Image borderRadius={9999} src="//placehold.it/128x128"/>
+          <Image borderRadius={9999} src="logo.jpg" maxHeight={180}/>
           <Heading>Nehuen Almacen</Heading>
           <Text>Almacen organico</Text>
         </VStack>
