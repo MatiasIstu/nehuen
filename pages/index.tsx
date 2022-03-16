@@ -1,7 +1,10 @@
 import React from "react";
 import { GetStaticProps } from "next";
-import { Button, Flex, Grid, Link, Stack, Image, Text } from "@chakra-ui/react";
-
+import { Button, Flex, Grid, Link, Stack, Image, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Box, Input } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+} from '@chakra-ui/react'
 import { Product } from "../product/types";
 import api from "../product/api";
 
@@ -18,6 +21,15 @@ function parseCurrency(value: number): string {
 }
 
 const IndexRoute: React.FC<Props> = ({ products }) => {
+
+  const [email, setEmailValue] = React.useState('')
+  const [number, setNumberValue] = React.useState('')
+  const [address, setAddressValue] = React.useState('')
+  const handleEmailChange = (event) => setEmailValue(event.target.value)
+  const handleNumberChange = (event) => setNumberValue(event.target.value)
+  const handleAddressChange = (event) => setAddressValue(event.target.value)
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [cart, setCart] = React.useState<Product[]>([]);
   const text = React.useMemo(
     () =>
@@ -37,11 +49,11 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
   function sendData(cart) {
     var data;
-    console.log(cart);
     
+   
     for (let i = 0; i < cart.length; i++) {
       data = '';
-      data = data.concat([cart[i].title, cart[i].description, cart[i].price].join(','));
+      data = data.concat([email,number,address,new Date().toLocaleString(), cart[i].title, cart[i].price].join(','));
       fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
         method: 'POST',
         body: data,
@@ -58,8 +70,33 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
   }
 
+
   return (
+    
     <Stack spacing={6}>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirmar pedido</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Perfecto! Para armar tu pedido necesitamos unos datos mas
+            <FormControl>
+            <FormLabel htmlFor='email'>Mail</FormLabel>
+            <Input id='email' type='email' onChange={handleEmailChange} value={email}/>
+            <FormLabel htmlFor='number' >Telefono</FormLabel>
+            <Input id='numero' type='string'  onChange={handleNumberChange} value={number}/>
+            <FormLabel htmlFor='addres'>Direccion</FormLabel>
+            <Input id='address' type='address'  onChange={handleAddressChange} value={address}/>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter alignItems="center" justifyContent="center">
+            <Button  colorScheme='blue' mr={3} onClick={()=>sendData(cart)}>
+              Enviar pedido
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
         {products.map((product) => (
           <Stack
@@ -68,6 +105,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             borderRadius="md"
             padding={4}
             spacing={3}
+
           >
             <Image
               alt={product.title}
@@ -76,13 +114,14 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
               objectFit="cover"
               src={product.image}
             />
-            <Stack spacing={1}>
+            <Stack spacing={1} justifyContent="space-between" height="100%">
+              <Stack spacing={1}>
               <Text>{product.title}</Text>
               <Text color="green.500" fontSize="sm" fontWeight="500">
                 {parseCurrency(product.price)}
               </Text>
-            </Stack>
-            <Button
+              </Stack>
+              <Button
               colorScheme="primary"
               size="sm"
               variant="outline"
@@ -90,6 +129,8 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             >
               Agregar
             </Button>
+            </Stack>
+
           </Stack>
         ))}
       </Grid>
@@ -99,13 +140,14 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             isExternal
             as={Link}
             colorScheme="whatsapp"
-            onClick={() => sendData(cart)}
+            onClick={onOpen}
             width="fit-content"
           >
             Completar pedido ({cart.length} productos)
           </Button>
         </Flex>
       )}
+      )
     </Stack>
   );
 };
