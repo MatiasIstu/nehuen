@@ -1,10 +1,10 @@
 import React from "react";
-import {GetStaticProps} from "next";
-import {Button, Flex, Grid, Link, Stack, Image, Text} from "@chakra-ui/react";
+import { GetStaticProps } from "next";
+import { Button, Flex, Grid, Link, Stack, Image, Text } from "@chakra-ui/react";
 
-import {Product} from "../product/types";
+import { Product } from "../product/types";
 import api from "../product/api";
-import axios from "axios";
+
 
 interface Props {
   products: Product[];
@@ -17,7 +17,7 @@ function parseCurrency(value: number): string {
   });
 }
 
-const IndexRoute: React.FC<Props> = ({products}) => {
+const IndexRoute: React.FC<Props> = ({ products }) => {
   const [cart, setCart] = React.useState<Product[]>([]);
   const text = React.useMemo(
     () =>
@@ -35,16 +35,28 @@ const IndexRoute: React.FC<Props> = ({products}) => {
 
 
 
-function sendData(cart) {
-  var data = '';
-  console.log(cart);
-  for(let i=0;i<cart.length;i++){
-    data.concat(cart.title+','+cart.description);
+  function sendData(cart) {
+    var data;
+    console.log(cart);
+
+    for (let i = 0; i < cart.length; i++) {
+      data = '';
+      data = data.concat([cart[i].title, cart[i].description, cart[i].price].join(','));
+      fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/csv;charset=utf-8',
+        }
+      }).then(response => {
+        console.log("Success:", response);
+      }).catch(err => {
+        console.log("Error:" + err);
+      });
+    }
+
   }
-  axios.post('https://script.google.com/macros/s/AKfycbyOqGlPaUK3PyEvl_MF9TbgsgmR1OkgYQaRoehx7EpsF0aRAYjQJpAPz8ti6Uu46l5G/exec',{
-    data
-  })
-}
 
   return (
     <Stack spacing={6}>
@@ -87,7 +99,7 @@ function sendData(cart) {
             isExternal
             as={Link}
             colorScheme="whatsapp"
-            onClick={()=>sendData(cart)}
+            onClick={() => sendData(cart)}
             width="fit-content"
           >
             Completar pedido ({cart.length} productos)
