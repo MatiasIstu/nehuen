@@ -67,12 +67,15 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         }
       }).then(response => {
         console.log("Success:", response);
+        onFirstClose();
+        onSecondOpen();
+        cart = []
+        console.log(cart);
       }).catch(err => {
         console.log("Error:" + err);
       });
     }
-    onFirstClose();
-    onSecondOpen();
+
   }
 
   function getTotal() {
@@ -97,7 +100,10 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             Su pedido ha sido confirmado! Muchas gracias
           </ModalBody>
           <ModalFooter alignItems="center" justifyContent="space-around">
-            <Button colorScheme='blue' onClick={onSecondClose}>
+            <Button colorScheme='blue' onClick={()=> {
+              onSecondClose
+              window.location.reload();
+            }}>
               Volver a la pagina principal
             </Button>
           </ModalFooter>
@@ -180,7 +186,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           </Stack>
         ))}
       </Grid>
-      {Boolean(cart.length) && (
+      {Boolean(cart.length > 0) && (
         <Flex alignItems="center" bottom={4} justifyContent="center" position="sticky">
           <Button
             isExternal
