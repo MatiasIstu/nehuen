@@ -22,13 +22,16 @@ function parseCurrency(value: number): string {
 
 const IndexRoute: React.FC<Props> = ({ products }) => {
 
-  const [email, setEmailValue] = React.useState('')
+  const [total,setTotalValue] = React.useState('')
+  const [name, setNameValue] = React.useState('')
   const [number, setNumberValue] = React.useState('')
   const [address, setAddressValue] = React.useState('')
-  const handleEmailChange = (event) => setEmailValue(event.target.value)
+  const [comment, setCommentValue] = React.useState('');
+  const handleNameChange = (event) => setNameValue(event.target.value)
   const handleNumberChange = (event) => setNumberValue(event.target.value)
   const handleAddressChange = (event) => setAddressValue(event.target.value)
-
+  const setTotal = (event) => setTotalValue(event.target.value)
+  const handleCommentChange =(event) => setCommentValue(event.target.value)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [cart, setCart] = React.useState<Product[]>([]);
   const text = React.useMemo(
@@ -53,7 +56,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
     for (let i = 0; i < cart.length; i++) {
       data = '';
-      data = data.concat([email, number, address, new Date().toLocaleString(), cart[i].title, cart[i].price].join(','));
+      data = data.concat([name, number, address, new Date().toLocaleString(), cart[i].title, cart[i].price,comment].join(','));
       fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
         method: 'POST',
         body: data,
@@ -70,7 +73,16 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
   }
 
+  function getTotal(){
 
+    let totalPrice = 0
+    for(let i =0;i<cart.length;i++){
+      console.log(cart[i].price)
+      totalPrice = totalPrice + cart[i].price
+    } 
+
+    setTotalValue(JSON.stringify(totalPrice)+'$');
+  }
   return (
 
     <Stack spacing={6}>
@@ -82,18 +94,23 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           <ModalBody>
             Perfecto! Para armar tu pedido necesitamos unos datos mas
             <FormControl>
-              <FormLabel htmlFor='email'>Mail</FormLabel>
-              <Input id='email' type='email' onChange={handleEmailChange} value={email} />
+              <FormLabel htmlFor='name'>Nombre</FormLabel>
+              <Input id='name' type='name' onChange={handleNameChange} value={name} />
               <FormLabel htmlFor='number' >Telefono</FormLabel>
               <Input id='numero' type='string' onChange={handleNumberChange} value={number} />
               <FormLabel htmlFor='addres'>Direccion</FormLabel>
               <Input id='address' type='address' onChange={handleAddressChange} value={address} />
+              <FormLabel htmlFor='comment'>Comentarios adicionales</FormLabel>
+              <Input id='comment' type='comment' onChange={handleCommentChange} value={comment} />
             </FormControl>
           </ModalBody>
           <ModalFooter alignItems="center" justifyContent="center">
             <Button colorScheme='blue' mr={3} onClick={() => sendData(cart)}>
               Enviar pedido
             </Button>
+            <Text>
+              Total: {total}
+            </Text>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -140,7 +157,10 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             isExternal
             as={Link}
             colorScheme="whatsapp"
-            onClick={onOpen}
+            onClick={()=>{
+              onOpen()
+              getTotal()
+            }}
             width="fit-content"
           >
             Completar pedido ({cart.length} productos)
