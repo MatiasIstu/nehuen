@@ -49,11 +49,11 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
   function sendData(cart) {
     var data;
-    
-   
+
+
     for (let i = 0; i < cart.length; i++) {
       data = '';
-      data = data.concat([email,number,address,new Date().toLocaleString(), cart[i].title, cart[i].price].join(','));
+      data = data.concat([email, number, address, new Date().toLocaleString(), cart[i].title, cart[i].price].join(','));
       fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
         method: 'POST',
         body: data,
@@ -72,7 +72,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
 
   return (
-    
+
     <Stack spacing={6}>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -82,16 +82,16 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           <ModalBody>
             Perfecto! Para armar tu pedido necesitamos unos datos mas
             <FormControl>
-            <FormLabel htmlFor='email'>Mail</FormLabel>
-            <Input id='email' type='email' onChange={handleEmailChange} value={email}/>
-            <FormLabel htmlFor='number' >Telefono</FormLabel>
-            <Input id='numero' type='string'  onChange={handleNumberChange} value={number}/>
-            <FormLabel htmlFor='addres'>Direccion</FormLabel>
-            <Input id='address' type='address'  onChange={handleAddressChange} value={address}/>
+              <FormLabel htmlFor='email'>Mail</FormLabel>
+              <Input id='email' type='email' onChange={handleEmailChange} value={email} />
+              <FormLabel htmlFor='number' >Telefono</FormLabel>
+              <Input id='numero' type='string' onChange={handleNumberChange} value={number} />
+              <FormLabel htmlFor='addres'>Direccion</FormLabel>
+              <Input id='address' type='address' onChange={handleAddressChange} value={address} />
             </FormControl>
           </ModalBody>
           <ModalFooter alignItems="center" justifyContent="center">
-            <Button  colorScheme='blue' mr={3} onClick={()=>sendData(cart)}>
+            <Button colorScheme='blue' mr={3} onClick={() => sendData(cart)}>
               Enviar pedido
             </Button>
           </ModalFooter>
@@ -101,7 +101,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         {products.map((product) => (
           <Stack
             key={product.id}
-            backgroundColor="gray.100"
+            backgroundColor="gray.200"
             borderRadius="md"
             padding={4}
             spacing={3}
@@ -116,19 +116,19 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             />
             <Stack spacing={1} justifyContent="space-between" height="100%">
               <Stack spacing={1}>
-              <Text>{product.title}</Text>
-              <Text color="green.500" fontSize="sm" fontWeight="500">
-                {parseCurrency(product.price)}
-              </Text>
+                <Text>{product.title}</Text>
+                <Text color="green.600" fontSize="sm" fontWeight="500">
+                  {parseCurrency(product.price)}
+                </Text>
               </Stack>
               <Button
-              colorScheme="primary"
-              size="sm"
-              variant="outline"
-              onClick={() => setCart((cart) => cart.concat(product))}
-            >
-              Agregar
-            </Button>
+                colorScheme="primary"
+                size="sm"
+                variant="outline"
+                onClick={() => setCart((cart) => cart.concat(product))}
+              >
+                Agregar
+              </Button>
             </Stack>
 
           </Stack>
