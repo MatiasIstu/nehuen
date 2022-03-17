@@ -1,13 +1,12 @@
 import React from "react";
 import { GetStaticProps } from "next";
-import { Button, Flex, Grid, Link, Stack, Image, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Box, Input } from "@chakra-ui/react";
+import { Checkbox, CheckboxGroup, Button, Flex, Grid, Link, Stack, Image, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Box, Input } from "@chakra-ui/react";
 import {
   FormControl,
   FormLabel,
 } from '@chakra-ui/react'
 import { Product } from "../product/types";
 import api from "../product/api";
-
 
 interface Props {
   products: Product[];
@@ -22,7 +21,7 @@ function parseCurrency(value: number): string {
 
 const IndexRoute: React.FC<Props> = ({ products }) => {
 
-  const [total,setTotalValue] = React.useState('')
+  const [total, setTotalValue] = React.useState('')
   const [name, setNameValue] = React.useState('')
   const [number, setNumberValue] = React.useState('')
   const [address, setAddressValue] = React.useState('')
@@ -31,8 +30,10 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   const handleNumberChange = (event) => setNumberValue(event.target.value)
   const handleAddressChange = (event) => setAddressValue(event.target.value)
   const setTotal = (event) => setTotalValue(event.target.value)
-  const handleCommentChange =(event) => setCommentValue(event.target.value)
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const handleCommentChange = (event) => setCommentValue(event.target.value)
+  const { isOpen: isFirstOpen , onOpen: onFirstOpen, onClose: onFirstClose } = useDisclosure()
+  const { isOpen: isSecondOpen , onOpen: onSecondOpen, onClose: onSecondClose } = useDisclosure()
+
   const [cart, setCart] = React.useState<Product[]>([]);
   const text = React.useMemo(
     () =>
@@ -56,7 +57,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
     for (let i = 0; i < cart.length; i++) {
       data = '';
-      data = data.concat([name, number, address, new Date().toLocaleString(), cart[i].title, cart[i].price,comment].join(','));
+      data = data.concat([name, number, address, new Date().toLocaleString(), cart[i].title, cart[i].price, comment].join(','));
       fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
         method: 'POST',
         body: data,
@@ -70,23 +71,40 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         console.log("Error:" + err);
       });
     }
-
+    onFirstClose();
+    onSecondOpen();
   }
 
-  function getTotal(){
+  function getTotal() {
 
     let totalPrice = 0
-    for(let i =0;i<cart.length;i++){
+    for (let i = 0; i < cart.length; i++) {
       console.log(cart[i].price)
       totalPrice = totalPrice + cart[i].price
-    } 
+    }
 
-    setTotalValue(JSON.stringify(totalPrice)+'$');
+    setTotalValue(JSON.stringify(totalPrice) + '$');
   }
   return (
 
     <Stack spacing={6}>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isSecondOpen} onClose={onSecondClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirmar pedido</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Su pedido ha sido confirmado! Muchas gracias
+          </ModalBody>
+          <ModalFooter alignItems="center" justifyContent="space-around">
+            <Button colorScheme='blue' onClick={onSecondClose}>
+              Volver a la pagina principal
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isFirstOpen} onClose={onFirstClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Confirmar pedido</ModalHeader>
@@ -94,23 +112,34 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           <ModalBody>
             Perfecto! Para armar tu pedido necesitamos unos datos mas
             <FormControl>
-              <FormLabel htmlFor='name'>Nombre</FormLabel>
-              <Input id='name' type='name' onChange={handleNameChange} value={name} />
-              <FormLabel htmlFor='number' >Telefono</FormLabel>
-              <Input id='numero' type='string' onChange={handleNumberChange} value={number} />
-              <FormLabel htmlFor='addres'>Direccion</FormLabel>
-              <Input id='address' type='address' onChange={handleAddressChange} value={address} />
-              <FormLabel htmlFor='comment'>Comentarios adicionales</FormLabel>
-              <Input id='comment' type='comment' onChange={handleCommentChange} value={comment} />
+              <Stack spacing={3} direction='column'>
+                <Stack spacing={-1}>
+                  <FormLabel htmlFor='name'>Nombre</FormLabel>
+                  <Input id='name' type='name' onChange={handleNameChange} value={name} />
+                </Stack>
+                <Stack spacing={-1}>
+                  <FormLabel htmlFor='number' >Telefono</FormLabel>
+                  <Input id='numero' type='string' onChange={handleNumberChange} value={number} />
+                </Stack>
+                <Checkbox >Envio a domicilio</Checkbox>
+                <Stack spacing={-1}>
+                  <FormLabel htmlFor='addres'>Direccion (solo si se pide envio)</FormLabel>
+                  <Input id='address' type='address' onChange={handleAddressChange} value={address} />
+                </Stack>
+                <Stack spacing={-1}>
+                  <FormLabel htmlFor='comment'>Comentarios adicionales</FormLabel>
+                  <Input id='comment' type='comment' onChange={handleCommentChange} value={comment} />
+                </Stack>
+              </Stack>
             </FormControl>
           </ModalBody>
-          <ModalFooter alignItems="center" justifyContent="center">
+          <ModalFooter alignItems="center" justifyContent="space-around">
+            <Text as='u' color="blackAlpha.800" fontSize="lg" fontWeight="400">
+              Total: {total}
+            </Text>
             <Button colorScheme='blue' mr={3} onClick={() => sendData(cart)}>
               Enviar pedido
             </Button>
-            <Text>
-              Total: {total}
-            </Text>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -157,8 +186,8 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             isExternal
             as={Link}
             colorScheme="whatsapp"
-            onClick={()=>{
-              onOpen()
+            onClick={() => {
+              onFirstOpen()
               getTotal()
             }}
             width="fit-content"
