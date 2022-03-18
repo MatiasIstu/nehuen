@@ -207,8 +207,8 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
                   <FormLabel htmlFor='number' >Telefono</FormLabel>
                   <Input id='numero' type='string' onChange={handleNumberChange} value={number} />
                 </Stack>
-                <Checkbox onChange={()=>setDay('Martes')}>Envio a domicilio (Martes)</Checkbox>
-                <Checkbox  onChange={()=>setDay('Jueves')}>Envio a domicilio (Jueves)</Checkbox>
+                <Checkbox onChange={()=>setDay('Martes')}>Pedido para el Martes de 18hs a 21hs</Checkbox>
+                <Checkbox  onChange={()=>setDay('Jueves')}>Pedido para el Jueves de 12hs a 17hs</Checkbox>
                 <Stack spacing={-1}>
                   <FormLabel htmlFor='address'>Direccion (Solo si se pide envio)</FormLabel>
                   <Input id='address' type='address' onChange={handleAddressChange} value={address} />
