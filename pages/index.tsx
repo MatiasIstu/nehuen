@@ -26,9 +26,11 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   const [number, setNumberValue] = React.useState('')
   const [address, setAddressValue] = React.useState('')
   const [comment, setCommentValue] = React.useState('');
+  const [quant, setQuantValue] = React.useState('');
   const handleNameChange = (event) => setNameValue(event.target.value)
   const handleNumberChange = (event) => setNumberValue(event.target.value)
   const handleAddressChange = (event) => setAddressValue(event.target.value)
+  const handleQuantValue = (event) => setQuantValue(event.target.value)
   const setTotal = (event) => setTotalValue(event.target.value)
   const handleCommentChange = (event) => setCommentValue(event.target.value)
   const { isOpen: isFirstOpen, onOpen: onFirstOpen, onClose: onFirstClose } = useDisclosure()
@@ -40,14 +42,15 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
 
 
-  function sendData(cart) {
+  async function sendData(cart) {
     var data;
 
-
+    console.log(cart);
     for (let i = 0; i < cart.length; i++) {
+      console.log(cart[i])
       data = '';
-      data = data.concat([name, number, address, new Date().toLocaleString(),day, cart[i].title, cart[i].price, comment].join(','));
-      fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
+      data = data.concat([name, number, address, new Date().toLocaleString(),day,cart[i].quant, cart[i].title, cart[i].price, comment].join(','));
+      await fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
         method: 'POST',
         body: data,
         mode: 'no-cors',
@@ -56,15 +59,15 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         }
       }).then(response => {
         console.log("Success:", response);
-        onFirstClose();
-        onSecondOpen();
-        cart = []
+
         console.log(cart);
       }).catch(err => {
         console.log("Error:" + err);
       });
     }
-
+    onFirstClose();
+    onSecondOpen();
+    cart = []
   }
   function setCartAndQuant(product){
     
@@ -74,6 +77,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
       if(cart[i].id == product.id){
         product.quant = product.quant + 1
         found = 1
+        setQuantValue(product.quant)
         setCart(cart)
         return;
       }
@@ -127,7 +131,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   return (
 
     <Stack spacing={6}>
-    <Modal isOpen={isThirdOpen && cart.length > 0} onClose={onThirdClose}>
+    <Modal isOpen={isThirdOpen && (cart.length) > 0} onClose={onThirdClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Resumen de su compra</ModalHeader>
