@@ -17,6 +17,9 @@ export default {
                     header:true,
                     complete: results=>{
                         const products = results.data as Product[]
+                        for(let i=0;i<products.length;i++){
+                            products[i].quant = 1
+                        }
                         return resolve(products.map(product=>({
                             ...product,
                             price: Number(product.price),
