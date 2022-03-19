@@ -20,7 +20,7 @@ function parseCurrency(value: number): string {
 }
 
 const IndexRoute: React.FC<Props> = ({ products }) => {
-  const [day,setDayValue] = React.useState('')
+  const [day, setDayValue] = React.useState('')
   const [total, setTotalValue] = React.useState('')
   const [name, setNameValue] = React.useState('')
   const [number, setNumberValue] = React.useState('')
@@ -49,7 +49,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
     for (let i = 0; i < cart.length; i++) {
       console.log(cart[i])
       data = '';
-      data = data.concat([name, number, address, new Date().toLocaleString(),day,cart[i].quant, cart[i].title, cart[i].price, comment].join(','));
+      data = data.concat([name, number, address, new Date().toLocaleString(), day, cart[i].quant, cart[i].title, cart[i].price, comment].join(','));
       await fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
         method: 'POST',
         body: data,
@@ -69,12 +69,12 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
     onSecondOpen();
     cart = []
   }
-  function setCartAndQuant(product){
-    
+  function setCartAndQuant(product) {
+
     let found = 0;
-    
-    for(let i=0;i<cart.length;i++){
-      if(cart[i].id == product.id){
+
+    for (let i = 0; i < cart.length; i++) {
+      if (cart[i].id == product.id) {
         product.quant = product.quant + 1
         found = 1
         setQuantValue(product.quant)
@@ -82,7 +82,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         return;
       }
     }
-    if(found == 0){
+    if (found == 0) {
       setCart((cart) => cart.concat(product))
     }
   }
@@ -92,23 +92,23 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   }
 
 
-  function filtrarVacios(product: Product): boolean{
+  function filtrarVacios(product: Product): boolean {
     return product.quant > 0
 
   }
 
-  function deleteProduct(product){
+  function deleteProduct(product) {
 
-  const mapProductos = function mapear(producto: Product): Product{
-    if(product.id == producto.id){
-      console.log("Estoy entrando aca")
-      product.quant = product.quant - 1;
+    const mapProductos = function mapear(producto: Product): Product {
+      if (product.id == producto.id) {
+        console.log("Estoy entrando aca")
+        product.quant = product.quant - 1;
+      }
+      return producto
     }
-    return producto
-  }
     setCart(cart.map(mapProductos).filter(filtrarVacios))
 
-    console.log("Carro despues de setear:" , cart)
+    console.log("Carro despues de setear:", cart)
   }
 
   function getTotal() {
@@ -120,9 +120,17 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
     setTotalValue(JSON.stringify(totalPrice) + '$');
   }
 
-  function getTotalProducts(){
-    let sum = 0;
+  function getTotalPrice() : number{
+    let precioTotal = 0
     for(let i=0;i<cart.length;i++){
+      precioTotal = precioTotal + (cart[i].price * cart[i].quant)
+    }
+    return precioTotal
+  }
+
+  function getTotalProducts() {
+    let sum = 0;
+    for (let i = 0; i < cart.length; i++) {
       sum = sum + cart[i].quant
     }
     return sum;
@@ -131,46 +139,54 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   return (
 
     <Stack spacing={6}>
-    <Modal isOpen={isThirdOpen && (cart.length) > 0} onClose={onThirdClose}>
+      <Modal isOpen={isThirdOpen && (cart.length) > 0} onClose={onThirdClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Resumen de su compra</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-          {cart.map((product) => (
-          <Stack
-            key={product.id}
-            backgroundColor="blue.50"
-            padding={4}
-            spacing={3}
-          >
-            <Stack spacing={1}  >
-              <Stack spacing={1}>
-                <Text>{product.title}</Text>
-                <Text>Cantidad: {product.quant}</Text>
-              </Stack>
-              <Button
-                colorScheme="primary"
-                size="xs"
-                variant="outline"
-                onClick={() =>  deleteProduct(product)}
+            {cart.map((product) => (
+              <Stack
+                key={product.id}
+                backgroundColor="blue.50"
+                padding={4}
+                spacing={3}
               >
-                Eliminar
-              </Button>
-            </Stack>
+                <Stack spacing={1}  >
+                  <Stack spacing={1}>
+                    <Text>{product.title}</Text>
+                    <Stack justifyContent="space-between" direction="row">
+                      <Text>Cantidad: {product.quant}</Text>
+                      <Text color="green.600">Precio Unitario: ${product.price}</Text>
+                    </Stack>
+                  </Stack>
+                  <Stack>
+                  <Button
+                    colorScheme="primary"
+                    size="xs"
+                    variant="outline"
+                    onClick={() => deleteProduct(product)}
+                  >
+                    Eliminar
+                  </Button>
+                  </Stack>
+                </Stack>
 
-          </Stack>
-        ))}
+              </Stack>
+            ))}
           </ModalBody>
-          <ModalFooter alignItems="center" justifyContent="space-around">
-            <Button colorScheme='blue' onClick={()=>{
-                                                onFirstOpen()
-                                                onThirdClose()}}>
+          <ModalFooter  alignItems="center" justifyContent="space-around" >
+            <Text>Total: {getTotalPrice()}</Text>
+            <Button colorScheme='blue' onClick={() => {
+              onFirstOpen()
+              onThirdClose()
+            }}>
               Siguiente paso
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
+
       <Modal isOpen={isSecondOpen} onClose={onSecondClose}>
         <ModalOverlay />
         <ModalContent>
@@ -207,8 +223,8 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
                   <FormLabel htmlFor='number' >Telefono</FormLabel>
                   <Input id='numero' type='string' onChange={handleNumberChange} value={number} />
                 </Stack>
-                <Checkbox onChange={()=>setDay('Martes')}>Pedido para el Martes de 18hs a 21hs</Checkbox>
-                <Checkbox  onChange={()=>setDay('Jueves')}>Pedido para el Jueves de 12hs a 17hs</Checkbox>
+                <Checkbox onChange={() => setDay('Martes')}>Pedido para el Martes de 18hs a 21hs</Checkbox>
+                <Checkbox onChange={() => setDay('Jueves')}>Pedido para el Jueves de 12hs a 17hs</Checkbox>
                 <Stack spacing={-1}>
                   <FormLabel htmlFor='address'>Direccion (Solo si se pide envio)</FormLabel>
                   <Input id='address' type='address' onChange={handleAddressChange} value={address} />
@@ -259,7 +275,8 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
                 size="sm"
                 variant="outline"
                 onClick={() => {
-                  setCartAndQuant(product)}}
+                  setCartAndQuant(product)
+                }}
               >
                 Agregar
               </Button>
