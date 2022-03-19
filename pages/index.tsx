@@ -7,6 +7,7 @@ import {
 } from '@chakra-ui/react'
 import { Product } from "../product/types";
 import api from "../product/api";
+import { m } from "framer-motion";
 
 interface Props {
   products: Product[];
@@ -60,7 +61,6 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
       }).then(response => {
         console.log("Success:", response);
 
-        console.log(cart);
       }).catch(err => {
         console.log("Error:" + err);
       });
@@ -85,6 +85,10 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
     if (found == 0) {
       setCart((cart) => cart.concat(product))
     }
+    console.log(cart);
+    if(cart.length == 0){
+      onThirdClose()
+    }
   }
 
   function setDay(arg0: string): void {
@@ -97,28 +101,40 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
   }
 
-  function deleteProduct(product) {
-
+ function deleteProduct(product) {
+     let todaviaSirve = 0
     const mapProductos = function mapear(producto: Product): Product {
       if (product.id == producto.id) {
-        console.log("Estoy entrando aca")
-        product.quant = product.quant - 1;
+        producto.quant = producto.quant - 1;
+        
       }
       return producto
     }
-    setCart(cart.map(mapProductos).filter(filtrarVacios))
-
-    console.log("Carro despues de setear:", cart)
-  }
-
-  function getTotal() {
-
-    let totalPrice = 0
-    for (let i = 0; i < cart.length; i++) {
-      totalPrice = totalPrice + cart[i].price
+ setCart(cart.map(mapProductos).filter(filtrarVacios))
+    products.map(item=>{
+      if(item.quant == 0){
+        item.quant += 1;
+      }
+    })
+    if(cart.length != 0){
+      for(let i =0;i<cart.length;i++){
+        if(cart[i].quant > 0){
+          console.log(cart[i])
+          todaviaSirve = 1
+        }
+      }
     }
-    setTotalValue(JSON.stringify(totalPrice) + '$');
+    console.log(todaviaSirve)
+    if(todaviaSirve != 1){
+      console.log("CERRALO")
+      onThirdClose()
+    }
+    if(cart.length == 0){
+      onThirdClose()
+    }
+
   }
+
 
   function getTotalPrice() : number{
     let precioTotal = 0
@@ -176,7 +192,9 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             ))}
           </ModalBody>
           <ModalFooter  alignItems="center" justifyContent="space-around" >
-            <Text>Total: {getTotalPrice()}</Text>
+            <Text as='u' color="green.600" fontSize="lg" fontWeight="400">
+              Total: ${getTotalPrice()}
+              </Text>
             <Button colorScheme='blue' onClick={() => {
               onFirstOpen()
               onThirdClose()
@@ -237,8 +255,8 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             </FormControl>
           </ModalBody>
           <ModalFooter alignItems="center" justifyContent="space-around">
-            <Text as='u' color="blackAlpha.800" fontSize="lg" fontWeight="400">
-              Total: {total}
+            <Text as='u' color="green.600" fontSize="lg" fontWeight="400">
+              Total: ${getTotalPrice()}
             </Text>
             <Button colorScheme='blue' mr={3} onClick={() => sendData(cart)}>
               Enviar pedido
@@ -293,7 +311,6 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             colorScheme="whatsapp"
             onClick={() => {
               onThirdOpen()
-              getTotal()
             }}
             width="fit-content"
           >
