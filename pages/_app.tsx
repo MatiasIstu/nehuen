@@ -14,8 +14,8 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       padding={4}>
         <VStack marginBottom={6}>
           <Image borderRadius={9999} src="logo.jpg" maxHeight={180}/>
-          <Heading>Nehuen Almacen</Heading>
-          <Text>Almacen organico</Text>
+          <Heading>Nehuen</Heading>
+          <Text fontSize={25}>Almacen organico</Text>
         </VStack>
         <Divider marginY={6}/>
       <Component {...pageProps} />

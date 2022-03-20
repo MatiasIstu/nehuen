@@ -7,8 +7,15 @@ import {
 } from '@chakra-ui/react'
 import { Product } from "../product/types";
 import api from "../product/api";
-import { m } from "framer-motion";
-
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+} from '@chakra-ui/react'
 interface Props {
   products: Product[];
 }
@@ -31,8 +38,6 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   const handleNameChange = (event) => setNameValue(event.target.value)
   const handleNumberChange = (event) => setNumberValue(event.target.value)
   const handleAddressChange = (event) => setAddressValue(event.target.value)
-  const handleQuantValue = (event) => setQuantValue(event.target.value)
-  const setTotal = (event) => setTotalValue(event.target.value)
   const handleCommentChange = (event) => setCommentValue(event.target.value)
   const { isOpen: isFirstOpen, onOpen: onFirstOpen, onClose: onFirstClose } = useDisclosure()
   const { isOpen: isSecondOpen, onOpen: onSecondOpen, onClose: onSecondClose } = useDisclosure()
@@ -46,7 +51,9 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   async function sendData(cart) {
     var data;
 
-    console.log(cart);
+    if(day != 'Martes' && day != 'Jueves'){
+      setDayValue('-');
+    }
     for (let i = 0; i < cart.length; i++) {
       console.log(cart[i])
       data = '';
@@ -85,8 +92,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
     if (found == 0) {
       setCart((cart) => cart.concat(product))
     }
-    console.log(cart);
-    if(cart.length == 0){
+    if (cart.length == 0) {
       onThirdClose()
     }
   }
@@ -101,44 +107,41 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
   }
 
- function deleteProduct(product) {
-     let todaviaSirve = 0
+  function deleteProduct(product) {
+    let todaviaSirve = 0
     const mapProductos = function mapear(producto: Product): Product {
       if (product.id == producto.id) {
         producto.quant = producto.quant - 1;
-        
+
       }
       return producto
     }
- setCart(cart.map(mapProductos).filter(filtrarVacios))
-    products.map(item=>{
-      if(item.quant == 0){
+    setCart(cart.map(mapProductos).filter(filtrarVacios))
+    products.map(item => {
+      if (item.quant == 0) {
         item.quant += 1;
       }
     })
-    if(cart.length != 0){
-      for(let i =0;i<cart.length;i++){
-        if(cart[i].quant > 0){
-          console.log(cart[i])
+    if (cart.length != 0) {
+      for (let i = 0; i < cart.length; i++) {
+        if (cart[i].quant > 0) {
           todaviaSirve = 1
         }
       }
     }
-    console.log(todaviaSirve)
-    if(todaviaSirve != 1){
-      console.log("CERRALO")
+    if (todaviaSirve != 1) {
       onThirdClose()
     }
-    if(cart.length == 0){
+    if (cart.length == 0) {
       onThirdClose()
     }
 
   }
 
 
-  function getTotalPrice() : number{
+  function getTotalPrice(): number {
     let precioTotal = 0
-    for(let i=0;i<cart.length;i++){
+    for (let i = 0; i < cart.length; i++) {
       precioTotal = precioTotal + (cart[i].price * cart[i].quant)
     }
     return precioTotal
@@ -155,55 +158,56 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   return (
 
     <Stack spacing={6}>
-      <Modal isOpen={isThirdOpen && (cart.length) > 0} onClose={onThirdClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Resumen de su compra</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {cart.map((product) => (
-              <Stack
-                key={product.id}
-                backgroundColor="blue.50"
-                padding={4}
-                spacing={3}
-              >
-                <Stack spacing={1}  >
-                  <Stack spacing={1}>
-                    <Text>{product.title}</Text>
-                    <Stack justifyContent="space-between" direction="row">
-                      <Text>Cantidad: {product.quant}</Text>
-                      <Text color="green.600">Precio Unitario: ${product.price}</Text>
+      <Drawer placement="right" onClose={onThirdClose} isOpen={isThirdOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerHeader borderBottomWidth='1px'>Informacion del pedido</DrawerHeader>
+          <DrawerBody>
+            <Stack direction="column" spacing={5} width="100%">
+              {cart.map((product) => (
+                <Stack
+                  key={product.id}
+                  backgroundColor="blue.50"
+                  padding={4}
+                  spacing={3}
+                  width="105%"
+                >
+                    <Stack spacing={1} >
+                      <Text>{product.title}</Text>
+                      <Stack justifyContent="space-between" direction="row">
+                        <Text >Cantidad: {product.quant}</Text>
+                        <Text color="green.600">Precio Unitario: ${product.price}</Text>
+                      </Stack>
+                    <Stack>
+                      <Button
+                        colorScheme="primary"
+                        size="xs"
+                        variant="outline"
+                        onClick={() => deleteProduct(product)}
+                      >
+                        Quitar Producto
+                      </Button>
                     </Stack>
                   </Stack>
-                  <Stack>
-                  <Button
-                    colorScheme="primary"
-                    size="xs"
-                    variant="outline"
-                    onClick={() => deleteProduct(product)}
-                  >
-                    Eliminar
-                  </Button>
-                  </Stack>
-                </Stack>
 
-              </Stack>
-            ))}
-          </ModalBody>
-          <ModalFooter  alignItems="center" justifyContent="space-around" >
+                </Stack>
+              ))}
+            </Stack>
+          </DrawerBody>
+          <DrawerFooter alignItems="center" justifyContent="space-around">
             <Text as='u' color="green.600" fontSize="lg" fontWeight="400">
               Total: ${getTotalPrice()}
-              </Text>
-            <Button colorScheme='blue' onClick={() => {
+            </Text>
+            <Button colorScheme='facebook' onClick={() => {
               onFirstOpen()
               onThirdClose()
             }}>
               Siguiente paso
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+
 
       <Modal isOpen={isSecondOpen} onClose={onSecondClose}>
         <ModalOverlay />
@@ -214,7 +218,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             Su pedido ha sido confirmado! Muchas gracias
           </ModalBody>
           <ModalFooter alignItems="center" justifyContent="space-around">
-            <Button colorScheme='blue' onClick={() => {
+            <Button colorScheme='facebook' onClick={() => {
               onSecondClose()
               window.location.reload();
             }}>
@@ -258,7 +262,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             <Text as='u' color="green.600" fontSize="lg" fontWeight="400">
               Total: ${getTotalPrice()}
             </Text>
-            <Button colorScheme='blue' mr={3} onClick={() => sendData(cart)}>
+            <Button colorScheme='facebook' mr={3} onClick={() => sendData(cart)}>
               Enviar pedido
             </Button>
           </ModalFooter>
@@ -269,7 +273,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           <Stack
             key={product.id}
             backgroundColor="gray.200"
-            borderRadius="md"
+            borderRadius="5"
             padding={4}
             spacing={3}
 
@@ -308,7 +312,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           <Button
             isExternal
             as={Link}
-            colorScheme="whatsapp"
+            colorScheme = "facebook"
             onClick={() => {
               onThirdOpen()
             }}
