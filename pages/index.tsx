@@ -1,6 +1,6 @@
 import React from "react";
 import { GetStaticProps } from "next";
-import { Checkbox, CheckboxGroup, Button, Flex, Grid, Link, Stack, Image, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Box, Input } from "@chakra-ui/react";
+import { Checkbox, CheckboxGroup, Button, Flex, Grid, Link, Stack, Image, Text, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Box, Input, Spinner } from "@chakra-ui/react";
 import {
   FormControl,
   FormLabel,
@@ -42,9 +42,10 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   const { isOpen: isFirstOpen, onOpen: onFirstOpen, onClose: onFirstClose } = useDisclosure()
   const { isOpen: isSecondOpen, onOpen: onSecondOpen, onClose: onSecondClose } = useDisclosure()
   const { isOpen: isThirdOpen, onOpen: onThirdOpen, onClose: onThirdClose } = useDisclosure()
-
+  const [loading,setLoadingValue] = React.useState(Boolean);
+  const handleLoading = (event) => setLoadingValue(event.target.value)
   const [cart, setCart] = React.useState<Product[]>([]);
-
+  const { isOpen: isSpinnerOpen, onOpen: onSpinnerOpen, onClose: onSpinnerClose } = useDisclosure()
 
 
 
@@ -55,6 +56,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
       setDayValue('-');
     }
     for (let i = 0; i < cart.length; i++) {
+      <Spinner/>
       console.log(cart[i])
       data = '';
       data = data.concat([name, number, address, new Date().toLocaleString(), day, cart[i].quant, cart[i].title, cart[i].price, comment].join(','));
@@ -208,18 +210,18 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
         </DrawerContent>
       </Drawer>
 
-
       <Modal isOpen={isSecondOpen} onClose={onSecondClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Pedido Confirmado</ModalHeader>
-          <ModalCloseButton />
           <ModalBody>
             Su pedido ha sido confirmado! Muchas gracias
           </ModalBody>
           <ModalFooter alignItems="center" justifyContent="space-around">
             <Button colorScheme='facebook' onClick={() => {
+              setLoadingValue(false)
               onSecondClose()
+              console.log(loading);
               window.location.reload();
             }}>
               Volver a la pagina principal
@@ -262,9 +264,16 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             <Text as='u' color="green.600" fontSize="lg" fontWeight="400">
               Total: ${getTotalPrice()}
             </Text>
-            <Button colorScheme='facebook' mr={3} onClick={() => sendData(cart)}>
+            <Button colorScheme='facebook' mr={3} onClick={() => {
+            sendData(cart)
+            setLoadingValue(true)
+            }}>
               Enviar pedido
             </Button>
+              {Boolean(loading) && (
+                    <Spinner/>
+
+              )}
           </ModalFooter>
         </ModalContent>
       </Modal>

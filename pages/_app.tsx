@@ -9,7 +9,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     <ChakraProvider theme={theme}>
       <Box padding={4}>
       <Container borderRadius="sm" backgroundColor="white"
-      boxShadow="md"
+      boxShadow="xl"
       maxWidth="container.xl"
       padding={4}>
         <VStack marginBottom={6}>

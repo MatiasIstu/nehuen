@@ -7,8 +7,10 @@ export default extendTheme({
     styles: {
         global:{
             body:{
-                backgroundColor: "primary.50"
+                backgroundColor:  '#20bf55',
+                bgGradient: 'linear(315deg,blue.200,green.200)'
             }
         }
     }
 })
+
