@@ -52,14 +52,17 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   async function sendData(cart) {
     var data;
 
+    var date = "3/24/2022  10:14:20 PM"
+    if(date.length != 18){
+      date = date.substring(0,19)
+    }
     if(day != 'Martes' && day != 'Jueves'){
       setDayValue('-');
     }
     for (let i = 0; i < cart.length; i++) {
       <Spinner/>
-      console.log(cart[i])
       data = '';
-      data = data.concat([name, number, address, new Date().toLocaleString(), day, cart[i].quant, cart[i].title, cart[i].price, comment].join(','));
+      data = data.concat([name, number, address, date, day, cart[i].quant, cart[i].title, cart[i].price, comment].join(','));
       await fetch("https://script.google.com/macros/s/AKfycbxAl4AO22GKqLqI30zPV_rrTXQoUCodiPus0Kib4Uwakj-AY5mjQq3Qg1GIV8RFrg5d/exec", {
         method: 'POST',
         body: data,
@@ -221,7 +224,6 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             <Button colorScheme='facebook' onClick={() => {
               setLoadingValue(false)
               onSecondClose()
-              console.log(loading);
               window.location.reload();
             }}>
               Volver a la pagina principal
