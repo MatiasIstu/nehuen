@@ -52,7 +52,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
   async function sendData(cart) {
     var data;
 
-    var date = "3/24/2022  10:14:20 PM"
+    var date = new Date().toLocaleDateString()
     if(date.length != 18){
       date = date.substring(0,19)
     }
