@@ -53,6 +53,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
     var data;
 
     var date = new Date().toLocaleDateString()
+    console.log(date);
     if(date.length != 18){
       date = date.substring(0,19)
     }
