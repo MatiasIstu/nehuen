@@ -54,7 +54,6 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
 
     var date = new Date().toISOString()
 
-    console.log(date);
     if(date.length != 18){
       date = date.substring(0,19)
     }
@@ -251,6 +250,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
                   <FormLabel htmlFor='number' >Telefono</FormLabel>
                   <Input id='numero' type='string' onChange={handleNumberChange} value={number} />
                 </Stack>
+                <Text textAlign="center"> El envio tiene un costo adicional (Consultar) </Text>
                 <Checkbox onChange={() => setDay('Martes')}>Pedido para el Martes de 18hs a 21hs</Checkbox>
                 <Checkbox onChange={() => setDay('Jueves')}>Pedido para el Jueves de 12hs a 17hs</Checkbox>
                 <Stack spacing={-1}>
