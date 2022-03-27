@@ -281,7 +281,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
+      <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(300px, 1fr))">
         {products.map((product) => (
           <Stack
             key={product.id}
@@ -294,7 +294,7 @@ const IndexRoute: React.FC<Props> = ({ products }) => {
             <Image
               alt={product.title}
               borderTopRadius="md"
-              maxHeight={128}
+              maxHeight={250}
               objectFit="cover"
               src={product.image}
             />
