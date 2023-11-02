@@ -135,7 +135,6 @@ export const IndexRoute: React.FC<Props> = ({ products }) => {
 
   return (
     <Stack spacing={6}>
-// Contenido del tercer modal
       <Drawer placement="right" onClose={onThirdClose} isOpen={isThirdOpen}>
         <DrawerOverlay />
         <DrawerContent>
@@ -184,7 +183,6 @@ export const IndexRoute: React.FC<Props> = ({ products }) => {
         </DrawerContent>
       </Drawer>
 
-// Contenido del segundo modal
       <Modal isOpen={isSecondOpen} onClose={onSecondClose}>
         <ModalOverlay />
         <ModalContent>
@@ -203,8 +201,6 @@ export const IndexRoute: React.FC<Props> = ({ products }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-
       <Modal isOpen={isFirstOpen} onClose={onFirstClose}>
         <ModalOverlay />
         <ModalContent>
@@ -303,7 +299,7 @@ export const IndexRoute: React.FC<Props> = ({ products }) => {
                 <Stack spacing={1}>
                   <Text>{product.title}</Text>
                   <Text color="green.600" fontSize="sm" fontWeight="500">
-                    {parseCurrency(product.price)}
+                    {parseCurrency(product.price ? product.price : 0)}
                   </Text>
                 </Stack>
                 <Button
