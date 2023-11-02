@@ -22,10 +22,21 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
+import api from "../product/api";
+
 import { Product } from "../product/types";
 import { Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent } from '@chakra-ui/react';
-import { Props, parseCurrency } from ".";
 
+export interface Props {
+  products: Product[];
+}
+
+function parseCurrency(value: number): string {
+    return value.toLocaleString("es-AR", {
+      style: "currency",
+      currency: "ARS",
+    });
+  }
 
 export const IndexRoute: React.FC<Props> = ({ products }) => {
   const [day, setDay] = useState('');
@@ -332,6 +343,17 @@ export const IndexRoute: React.FC<Props> = ({ products }) => {
       }
     </Stack >
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const products = await api.list();
+
+  return {
+    revalidate: 10,
+    props: {
+      products,
+    },
+  };
 };
 
 export default IndexRoute;
