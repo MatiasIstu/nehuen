@@ -23,6 +23,7 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 import api from "../product/api";
+import { GetStaticProps } from "next";
 
 import { Product } from "../product/types";
 import { Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent } from '@chakra-ui/react';
