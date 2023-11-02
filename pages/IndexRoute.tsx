@@ -204,6 +204,7 @@ export const IndexRoute: React.FC<Props> = ({ products }) => {
         </ModalContent>
       </Modal>
 
+
       <Modal isOpen={isFirstOpen} onClose={onFirstClose}>
         <ModalOverlay />
         <ModalContent>
