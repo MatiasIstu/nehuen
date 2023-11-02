@@ -212,7 +212,7 @@ export const IndexRoute: React.FC<Props> = ({ products }) => {
               <Stack spacing={3} direction='column'>
                 <Stack spacing={-1}>
                   <FormLabel htmlFor='name'>Nombre</FormLabel>
-                  <Input id='name' re type='name' onChange={handleNameChange} value={name} />
+                  <Input id='name' type='name' onChange={handleNameChange} value={name} />
                 </Stack>
                 <Stack spacing={-1}>
                   <FormLabel htmlFor='number'>Telefono</FormLabel>
