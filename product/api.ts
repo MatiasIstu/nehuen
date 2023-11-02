@@ -5,28 +5,29 @@ import Papa from "papaparse";
 
 
 export default {
-    list: async ():Promise<Product[]> =>{
+    list: async (): Promise<Product[]> => {
         return axios.get(
             'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsP4hCXusGoZvEEnYfwLR65JM-F5fAnA_7ptlwySwaRbA-FTQ9C2EnHwEoIuO-HO3NlHAmJccVIAjB/pub?output=csv',
             {
-                responseType:'blob'
+                responseType: 'blob'
             }
-        ).then(response=>{
-            return new Promise<Product[]>((resolve,reject)=>{
-                Papa.parse(response.data,{
-                    header:true,
-                    complete: results=>{
+        ).then(response => {
+            return new Promise<Product[]>((resolve, reject) => {
+                Papa.parse(response.data, {
+                    header: true,
+                    complete: results => {
+                        console.log(results.data)
                         const products = results.data as Product[]
-                        for(let i=0;i<products.length;i++){
+                        for (let i = 0; i < products.length; i++) {
                             products[i].quant = 1
                         }
-                        return resolve(products.map(product=>({
+                        return resolve(products.map(product => ({
                             ...product,
                             price: Number(product.price),
 
                         })))
                     },
-                    error: (error) =>{
+                    error: (error) => {
                         return reject(error.message);
                     }
                 });

@@ -6,4 +6,5 @@ export interface Product{
     image: string;
     price: number;
     quant:number;
+    type: string;
 }
